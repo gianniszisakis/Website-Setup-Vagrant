@@ -47,7 +47,44 @@ To get started with this setup, follow these steps:
 
 ## Customization
 
-You can customize the Vagrant setup according to your project requirements by modifying the `Vagrantfile` and the provisioning scripts located in the `provision` directory. Feel free to add additional software, tweak configurations, or change settings to suit your needs.
+You can customize the Vagrant setup according to your project requirements by modifying the `Vagrantfile` and the provisioning. Feel free to add additional software, tweak configurations, or change settings to suit your needs.
+
+This script automates the deployment of a web template onto an Apache web server. Below are the steps performed by the script:
+
+```bash
+# Install necessary packages: Apache web server, wget for downloading files, and unzip and zip for handling compressed files
+yum install httpd wget unzip zip -y
+
+# Start the Apache web server
+systemctl start httpd
+
+# Enable Apache to start automatically on system boot
+systemctl enable httpd
+
+# Create a temporary directory for our project
+mkdir -p /tmp/ourProject
+
+# Change directory to the temporary directory
+cd /tmp/ourProject
+
+# Download the web template zip file. The --no-check-certificate flag disables certificate checks for HTTPS connections.
+wget --no-check-certificate https://www.tooplate.com/zip-templates/2137_barista_cafe.zip
+
+# Extract the contents of the downloaded zip file. The -o flag overwrites existing files without prompting.
+unzip -o 2137_barista_cafe.zip
+
+# Copy the contents of the extracted directory to the Apache web server's root directory
+cp -r 2137_barista_cafe/* /var/www/html
+
+# Restart the Apache web server to apply changes
+systemctl restart httpd
+
+# Change directory back to /tmp/
+cd /tmp/
+
+# Remove the temporary directory and its contents. The -rf flags remove directories and files forcefully and recursively without prompting for confirmation.
+rm -rf /tmp/ourProject
+```
 
 ## Contributing
 
